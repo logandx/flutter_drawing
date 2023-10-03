@@ -35,7 +35,9 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const Spacer(),
+            const SizedBox(
+              height: 200,
+            ),
             Signature(
               canvasGlobalKey: canvasGlobalKey,
               backgroundColor: Colors.amber,
