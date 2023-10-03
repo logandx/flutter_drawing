@@ -63,7 +63,6 @@ class _SignatureState extends State<Signature> {
   void onPanStart(DragStartDetails details) {
     RenderBox box = context.findRenderObject() as RenderBox;
     Offset point = box.globalToLocal(details.globalPosition);
-    print(controller.value.color);
     if (isPointWithinBounds(point, maxWidth, maxHeight)) {
       currentLineNotifier.value = Sketch(
         points: [point],

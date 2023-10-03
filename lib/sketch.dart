@@ -34,13 +34,21 @@ class SketchValue extends Equatable {
     this.color = Colors.black,
     this.strokeWidth = 2.0,
     this.sketch,
+    this.base64String,
   });
 
   final List<Sketch> sketches;
   final Sketch? sketch;
   final Color color;
   final double strokeWidth;
+  final String? base64String;
 
   @override
-  List<Object?> get props => [sketches, sketch, color, strokeWidth];
+  List<Object?> get props => [
+        sketches,
+        sketch,
+        color,
+        strokeWidth,
+        base64String,
+      ];
 }

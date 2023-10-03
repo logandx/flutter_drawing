@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> {
               controller: _controller,
               onSignatureSaved: (value) {
                 log(value);
+                _controller.save(value);
               },
             ),
           ],

@@ -5,7 +5,8 @@ import 'signature_controller.dart';
 import 'sketch.dart';
 
 class SignatureControllerWrapper extends SingleChildStatefulWidget {
-  const SignatureControllerWrapper({super.key, 
+  const SignatureControllerWrapper({
+    super.key,
     required this.controller,
     required this.currentLineNotifier,
     required this.linesNotifier,

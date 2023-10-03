@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'sketch.dart';
 
 class SignatureController extends ValueNotifier<SketchValue> {
-  SignatureController({SketchValue? value}) : super(value ?? const SketchValue());
+  SignatureController({SketchValue? value})
+      : super(value ?? const SketchValue());
 
   void clear() {
     value = SketchValue(
@@ -56,6 +57,18 @@ class SignatureController extends ValueNotifier<SketchValue> {
     }
   }
 
+  void save(String base64String) {
+    if (value.base64String != base64String) {
+      value = SketchValue(
+        base64String: base64String,
+        color: value.color,
+        sketch: value.sketch,
+        sketches: value.sketches,
+        strokeWidth: value.strokeWidth,
+      );
+    }
+  }
+
   Offset? get maxOffset {
     if (value.sketches.isEmpty) return null;
     double maxX = double.negativeInfinity;
@@ -81,6 +94,4 @@ class SignatureController extends ValueNotifier<SketchValue> {
     }
     return Offset(minX, minY);
   }
-
-
 }

@@ -9,7 +9,7 @@ class SignaturePainter extends CustomPainter {
   final List<Sketch> sketches;
 
   @override
-  void paint(Canvas canvas, _) {
+  void paint(Canvas canvas, Size size) {
     for (final sketch in sketches) {
       final points = sketch.points;
       if (points.isEmpty) return;
