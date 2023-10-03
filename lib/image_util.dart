@@ -19,7 +19,7 @@ class ImageUtil {
     return pngBytes;
   }
 
- static Uint8List cropImg(Uint8List image, Offset min, Offset max) {
+  static Uint8List cropImg(Uint8List image, Offset min, Offset max) {
     final img.Image? imageBeforeResize = img.decodePng(image);
     final img.Image imageAfterResize = img.copyCrop(
       imageBeforeResize!,

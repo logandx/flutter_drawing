@@ -12,6 +12,7 @@ class SignatureController extends ValueNotifier<SketchValue> {
       sketches: const [],
       color: value.color,
       strokeWidth: value.strokeWidth,
+      base64String: value.base64String,
     );
   }
 
