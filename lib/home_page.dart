@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_drawing_example/sketch.dart';
 
 import 'clear_button.dart';
 import 'color_picker.dart';
@@ -10,7 +11,8 @@ import 'signature_controller.dart';
 import 'stroke_width_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.title});
+  final String title;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,7 +20,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _controller = SignatureController();
-  final canvasGlobalKey = GlobalKey();
 
   @override
   void dispose() {
@@ -30,54 +31,67 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App Bar'),
+        title: Text(widget.title),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(
-              height: 200,
-            ),
-            Signature(
-              canvasGlobalKey: canvasGlobalKey,
+      body: Column(
+        children: [
+          Expanded(
+            child: Signature(
               backgroundColor: Colors.amber,
-              width: 300,
-              height: 230,
               controller: _controller,
             ),
-            const SizedBox(height: 8),
-            ClearButton(
-              onClear: () {
-                _controller.clear();
-              },
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                ColorPickerWidget(
-                  controller: _controller,
-                  onColorChanged: (value) {
-                    _controller.setColor(value);
+          ),
+          const SizedBox(height: 8),
+          ClearButton(
+            onClear: () {
+              _controller.clear();
+            },
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              ColorPickerWidget(
+                controller: _controller,
+                onColorChanged: (value) {
+                  _controller.setColor(value);
+                },
+              ),
+              StrokeWidthWidget(
+                controller: _controller,
+                onStrokeWidthChanged: (value) {
+                  _controller.setStrokeWidth(value);
+                },
+              )
+            ],
+          ),
+          SaveButton(
+            controller: _controller,
+            onSignatureSaved: (value) {
+              _controller.save(value);
+            },
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ValueListenableBuilder<SketchValue>(
+                valueListenable: _controller,
+                builder: (context, value, child) => ElevatedButton(
+                    onPressed: value.sketch == null || value.sketches.isEmpty
+                        ? null
+                        : () {
+                            _controller.undo();
+                          },
+                    child: const Text('Undo')),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    log(_controller.canRedo.value.toString());
+                    _controller.redo();
                   },
-                ),
-                StrokeWidthWidget(
-                  controller: _controller,
-                  onStrokeWidthChanged: (value) {
-                    _controller.setStrokeWidth(value);
-                  },
-                )
-              ],
-            ),
-            SaveButton(
-              canvasGlobalKey: canvasGlobalKey,
-              controller: _controller,
-              onSignatureSaved: (value) {
-                log(value);
-                _controller.save(value);
-              },
-            ),
-          ],
-        ),
+                  child: const Text('Redo')),
+            ],
+          )
+        ],
       ),
     );
   }

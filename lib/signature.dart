@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_drawing_example/convert_to_base64_wrapper.dart';
+import 'package:flutter_drawing_example/undo_redo_stack_wrapper.dart';
 
 import 'signature_painter.dart';
 
@@ -11,17 +13,17 @@ class Signature extends StatefulWidget {
   const Signature({
     Key? key,
     this.controller,
-    required this.width,
-    required this.height,
+    this.width,
+    this.height,
     this.backgroundColor,
-    required this.canvasGlobalKey,
+    this.clipBehavior = Clip.antiAlias,
   }) : super(key: key);
 
   final SignatureController? controller;
   final double? width;
   final double? height;
   final Color? backgroundColor;
-  final GlobalKey canvasGlobalKey;
+  final Clip clipBehavior;
 
   @override
   State<Signature> createState() => _SignatureState();
@@ -127,8 +129,12 @@ class _SignatureState extends State<Signature> {
     return ValueListenableBuilder<List<Sketch>>(
       valueListenable: linesNotifier,
       builder: (context, value, _) {
-        return RepaintBoundary(
-          key: widget.canvasGlobalKey,
+        return Nested(
+          children: [
+            ConvertToBase64Wrapper(
+              controller: controller,
+            ),
+          ],
           child: SizedBox(
             width: maxWidth,
             height: maxHeight,
@@ -152,16 +158,24 @@ class _SignatureState extends State<Signature> {
           currentLineNotifier: currentLineNotifier,
           linesNotifier: linesNotifier,
         ),
+        UndoRedoStackWrapper(
+          controller: controller,
+          currentLineNotifier: currentLineNotifier,
+          linesNotifier: linesNotifier,
+        ),
       ],
-      child: Container(
-        color: widget.backgroundColor,
-        width: maxWidth,
-        height: maxHeight,
-        child: Stack(
-          children: [
-            buildAllSketches(),
-            buildCurrentPath(),
-          ],
+      child: ClipRRect(
+        clipBehavior: widget.clipBehavior,
+        child: Container(
+          color: widget.backgroundColor,
+          width: maxWidth,
+          height: maxHeight,
+          child: Stack(
+            children: [
+              buildAllSketches(),
+              buildCurrentPath(),
+            ],
+          ),
         ),
       ),
     );

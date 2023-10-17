@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:nested/nested.dart';
 
 import 'signature_controller.dart';
@@ -16,28 +17,28 @@ class SignatureControllerWrapper extends SingleChildStatefulWidget {
   final ValueNotifier<List<Sketch>> linesNotifier;
 
   @override
-  State<SignatureControllerWrapper> createState() => _MyWidgetState();
+  State<SignatureControllerWrapper> createState() =>
+      _SignatureControllerWrapperState();
 }
 
-class _MyWidgetState extends SingleChildState<SignatureControllerWrapper> {
+class _SignatureControllerWrapperState
+    extends SingleChildState<SignatureControllerWrapper> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(onHandleController);
+    widget.controller.addListener(_controllerTick);
   }
 
-  void onHandleController() {
-    if (widget.controller.value.sketch == null &&
-        widget.controller.value.sketches.isEmpty) {
+  void _controllerTick() {
+    if (!widget.controller.value.hasLine) {
       widget.currentLineNotifier.value = null;
       widget.linesNotifier.value = [];
     }
-    setState(() {});
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(onHandleController);
+    widget.controller.removeListener(_controllerTick);
     super.dispose();
   }
 

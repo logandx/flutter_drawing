@@ -1,7 +1,5 @@
-import 'dart:convert';
-import 'dart:developer';
+import 'dart:typed_data';
 
-import 'image_util.dart';
 import 'signature_controller.dart';
 import 'sketch.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +7,11 @@ import 'package:flutter/material.dart';
 class SaveButton extends StatelessWidget {
   const SaveButton({
     super.key,
-    required this.canvasGlobalKey,
     required this.controller,
     required this.onSignatureSaved,
   });
-  final GlobalKey canvasGlobalKey;
   final SignatureController controller;
-  final void Function(String base64String) onSignatureSaved;
+  final void Function(Uint8List imageBytes)? onSignatureSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -23,23 +19,12 @@ class SaveButton extends StatelessWidget {
       valueListenable: controller,
       builder: (context, value, child) {
         return ElevatedButton(
-          onPressed: value.sketch == null || value.sketches.isEmpty
+          onPressed: value.sketches.isEmpty || value.sketch == null
               ? null
               : () async {
-                  final pngBytes = await ImageUtil.getBytes(canvasGlobalKey);
-                  if (pngBytes == null) return;
-                  final minOffset = controller.minOffset;
-                  final maxOffset = controller.maxOffset;
-                  if (minOffset != null && maxOffset != null) {
-                    final result = ImageUtil.cropImg(
-                      pngBytes,
-                      minOffset,
-                      maxOffset,
-                    );
-                    final base64String = base64Encode(result);
-                    log(base64String);
-                    onSignatureSaved.call(base64String);
-                  }
+                  final result = await controller.imageBytes;
+                  if (result == null) return;
+                  onSignatureSaved?.call(result);
                 },
           child: const Text('Lưu'),
         );
